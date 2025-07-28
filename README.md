@@ -1,6 +1,6 @@
 # AD-LLaVa-3D
 
-# Predicting Alzheimer's Progression with a Multimodal Vision-Language Model
+# Predicting Alzheimer's Future Progression with a Multimodal Vision-Language Model
 
 ![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Coming%20Soon-yellow)
 ![Paper](https://img.shields.io/badge/Paper-Under%20Review-blue)
