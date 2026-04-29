@@ -1,0 +1,4 @@
+data_root = "/path_to_data/"
+train_json = "train.jsonl"
+test_json = "test.jsonl"
+all_mri_file = "all_mri.h5"

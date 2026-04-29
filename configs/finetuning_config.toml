@@ -1,0 +1,41 @@
+# --- Base Model Configuration ---
+pretrained_checkpoint = "path/to/pretrained/checkpoint.ckpt"  # Path to the checkpoint you want to fine-tune from
+load_pretrained = true                                     # Whether to load the pretrained checkpoint
+
+# --- Freezing Layers ---
+freeze_base_model = true                                    # Whether to freeze most of the base model
+frozen_layers = [                                          # List of specific layer names to freeze
+    "vision.encoder.layer.0",
+    "language.encoder.layer.0",
+    # Add more layer names to freeze
+]
+
+# --- Learning Rate Configuration ---
+base_learning_rate = 1e-4                                 # Learning rate for the unfrozen layers
+frozen_learning_rate = null                               # Optional: Specific LR for frozen layers (if unfreezing some later)
+learning_rate_scheduler = "ReduceLROnPlateau"               # Learning rate scheduler to use (e.g., StepLR, CosineAnnealingLR)
+
+[optimizer_params]
+weight_decay = 1e-5
+
+[scheduler_params]
+factor = 0.1
+patience = 3
+mode = "min"
+
+# --- Fine-tuning Training Parameters ---
+max_epochs = 20                                           # Number of fine-tuning epochs
+batch_size = 16                                           # Batch size for fine-tuning (can be different from pretraining)
+num_workers = 4
+accelerator = "auto"
+devices = "auto"
+strategy = "auto"
+monitor_metric = "val_loss"
+monitor_mode = "min"
+save_top_k = 1
+gradient_clip_val = 1.0
+accumulate_grad_batches = 1
+experiment_name = "fine_tune_run_1"
+use_wandb = true
+wandb_project_name = "my-multi-modal-finetuning"
+evaluate_after_training = true

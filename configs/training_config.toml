@@ -1,0 +1,11 @@
+logs_dir = "/path_to/logs/lightning_logs/"
+checkpoint_dir = "/path_to/logs/checkpoints"
+use_early_stopping = true
+
+
+[trainer]
+max_epochs = 100
+
+[wandb]
+use_wandb = true
+

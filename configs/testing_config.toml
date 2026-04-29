@@ -1,0 +1,3 @@
+checkpoint_path = "/path_to/checkpoint.ckpt" # Path to the checkpoint you want to test
+batch_size = 64 # Can override data_config for testing
+num_workers = 4 # Can override data_config for testing

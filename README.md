@@ -1,43 +1,72 @@
-# AD-LLaVa-3D
+# AD-LLaVA-3D
 
-# Predicting Alzheimer's Future Progression with a Multimodal Vision-Language Model
+A multimodal AI framework for Alzheimer's Disease (AD) analysis using 3D brain MRI. It fine-tunes [LLaVA-NeXT-Video-7B](https://huggingface.co/llava-hf/LLaVA-NeXT-Video-7B-hf) with LoRA adapters to answer clinical questions from 3D MRI volumes (ADNI / OASIS), combining a vision encoder (MAE-ViT), a language model (DeepSeek/LLaMA), and a gated MoE fusion module.
 
-![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Coming%20Soon-yellow)
-![Paper](https://img.shields.io/badge/Paper-Under%20Review-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
+## Requirements
 
----
+- Python ≥ 3.13.3
+- CUDA-capable GPU
+- [uv](https://docs.astral.sh/uv/) package manager
 
-## 🚀 Overview
+## Install
 
-This repository contains the code and resources for our research on predicting the future progression of Alzheimer's disease (AD). We leverage a state-of-the-art multimodal AI model to analyze both brain MRI scans and structured electronic health records (EHR) together, providing a more holistic and accurate forecast of how a patient's condition will evolve over time.
+```bash
+# Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-## 🧠 The Challenge: Why is this important?
+# Clone and set up the project
+git clone <repo-url>
+cd AD-LLAVA-3D
 
-Predicting how Alzheimer's disease will progress in a specific individual is incredibly challenging. The disease affects each person differently, and relying on just one type of data—like an MRI scan or a cognitive test—can miss the full picture. This work aims to provide patients, families, and clinicians with a better, more personalized tool for understanding future health outcomes.
+# Install all dependencies
+uv sync
+```
 
-## 🛠️ Our Approach: How does it work?
+## Configuration
 
-Our method combines the strengths of different data types by using a powerful vision-language model.
+Edit the TOML files under `configs/` before running:
 
-1.  **Foundation Model:** We start with **LLaVA-NeXT-Video**, a model that excels at understanding both images and text.
-2.  **Analyzing MRI Scans:** We treat 3D MRI scans as "video-like" data. This allows the model to analyze the brain's structure slice by slice, understanding the full volumetric context rather than just a flat image.
-3.  **Understanding Patient History:** Our key innovation is a method to convert sparse, tabular EHR data (like cognitive scores, demographics, and biomarkers) into rich, descriptive text prompts. This gives the model crucial clinical context to interpret the MRI scan.
-4.  **Fine-Tuning for Prediction:** We then fine-tune the model on the public ADNI dataset, teaching it to connect the patterns in the MRI and EHR data from one point in time to predict clinical outcomes at a future visit.
+| File | Purpose |
+|---|---|
+| `configs/data_config.toml` | Data paths (MRI H5 file, JSON splits) |
+| `configs/model_config.toml` | Pretrained model directory |
+| `configs/training_config.toml` | Training hyperparameters, W&B logging |
+| `configs/testing_config.toml` | Checkpoint path for evaluation |
 
-## ✨ Key Features
+## Usage
 
-* **Multimodal Analysis:** Integrates MRI (vision) and EHR (text) data for more accurate predictions.
-* **Longitudinal Forecasting:** Predicts patient outcomes at various future time points (e.g., from visit 1 to visit 3, or visit 2 to visit 4).
-* **Innovative Data Handling:** A novel strategy to create thousands of training samples from longitudinal patient records and handle sparse EHR data effectively.
-* **State-of-the-Art Foundation:** Built on the powerful LLaVA-NeXT-Video architecture.
+### Train
 
-## 📈 Project Status & Future Plans
+```bash
+uv run scripts/train.py
+```
 
-* **📜 Manuscript:** Our research paper detailing the full methodology and results is currently under peer review. We will post a link to the publication here once it has been accepted.
-* **🤗 Hugging Face Model:** We plan to release the fine-tuned model weights on the Hugging Face Hub to allow the community to use and build upon our work. Stay tuned!
-* **💻 Code:** The code in this repository will be further documented and cleaned up for easier use upon the paper's publication.
+### Test
 
-## 📝 Citation
+```bash
+uv run scripts/test.py \
+    --lora_rank 4 \
+    --checkpoint_path /path/to/pytorch_model.pt \
+    --result_save_path /path/to/test_result.json
+```
 
-If you find our work useful in your research, we would appreciate a citation to our paper once it is published.
+Results are saved as a JSON file at `--result_save_path`.
+
+## License
+
+This project is licensed under the [CC BY-NC 4.0 License](LICENSE) — free for research and non-commercial use only.
+
+## Project Structure
+
+```
+configs/        # TOML configuration files
+scripts/        # Entry points: train.py, test.py, fine_tune.py
+src/
+  datamodules/  # MRI data loading and Lightning DataModule
+  models/
+    fusion/     # Gated MoE fusion module
+    language/   # DeepSeek/LLaMA language model
+    vision/     # MAE-ViT vision encoder
+    multi_modal_model.py  # Main LLaVA-NeXT-Video Lightning module
+  utils/        # Config loaders, tools
+```
